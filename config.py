@@ -1,8 +1,10 @@
 from enum import Enum, auto
 
+servers = [1558314633046134838, 1514450228361695292]
 
 class Channels:
     log = [1558318108396224592] # append to this list, every channel in the list will get a log
+
 
 class Action(Enum):
     KICK = auto()

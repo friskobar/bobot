@@ -24,6 +24,13 @@ async def log_action(actor: discord.Member, reason: str, action: config.Action, 
     for id in config.Channels.log:
         await bot.get_channel(id).send(embeds=[em])
 
+# ensures that the server this command is ran on is one of ours; should prevent a wide variety of exploits involving custom permissions
+async def validate_server(i: discord.Interaction):
+    if i.guild.id in config.servers:
+        return True
+    else:
+        return False
+    
 
 ############################ SEPARATE ABOVE INTO A NEW FILE LATER ############################
 
@@ -36,13 +43,17 @@ async def on_ready():
     except Exception as e:
         print(e)
 
-@bot.tree.command(name="ping")
+@bot.tree.command(name="bob")
 async def ping(i: discord.Interaction):
-    await i.response.send_message("bong")
+    await i.response.send_message("bob")
 
 @bot.tree.command(name="timeout", description="Times out a member for a duration")
 @has_permissions(moderate_members=True)
 async def timeout(i: discord.Interaction, offender: discord.Member, duration: str, reason: str):
+    valid = await validate_server(i)
+    if not valid:
+        return
+    
     parts = re.findall(r"(\d+)\s*([dhm])", duration.lower())
 
     days = hours = minutes = 0
@@ -59,13 +70,18 @@ async def timeout(i: discord.Interaction, offender: discord.Member, duration: st
     except Exception as e:
         await i.channel.send(f"Failed to timeout {member.mention}. {str(e)}")
     else:
-        await i.response.send_message(f"Timed {offender.mention} for **{str(days)} days {str(hours)} hours and {str(minutes)} minutes**")
+        await i.response.send_message(f"Timed {offender.mention} out for **{str(days)} days {str(hours)} hours and {str(minutes)} minutes**")
         await log_action(i.user, reason, config.Action.TIMEOUT, offender)
 
 
 @bot.tree.command(name="untimeout", description="Removes timeout from a member")
 @has_permissions(moderate_members=True)
 async def untimeout(i: discord.Interaction, offender: discord.Member, reason: str):
+    valid = await validate_server(i)
+    if not valid:
+        return
+
+
     try:
         await offender.timeout(None) # None actually removes the timeout
     except Exception as e:
@@ -78,6 +94,10 @@ async def untimeout(i: discord.Interaction, offender: discord.Member, reason: st
 @bot.tree.command(name="kick", description="Kicks a member")
 @has_permissions(kick_members=True)
 async def kick(i: discord.Interaction, offender: discord.Member, reason: str):
+    valid = await validate_server(i)
+    if not valid:
+        return
+    
     try:
         await offender.kick(reason=reason)
     except Exception as e:
