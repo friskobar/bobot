@@ -164,7 +164,7 @@ async def on_command_error(ctx: discord.CommandsContext, err: discord.Error):
 async def on_message_delete(message: discord.Message):
     if message.channel.id in config.Channels.log:
         for user in config.log_notif:
-            await bot.get_user(user).send(f"**__WARNING!__** This message was deleted from the <#{message.channel.id}> log channel! The log:\n\n{message.content}", embeds=message.embeds)
+            await bot.get_user(user).send(f"**__WARNING!__** This message was deleted from the <#{message.channel.id}> log channel. The log:\n\n{message.content}", embeds=message.embeds)
 
 
 bot.run(os.environ["TOKEN"])
