@@ -65,7 +65,7 @@ async def help(i: discord.Interaction):
     3. __**/kick [@offender] [reason]**__
         - Kicks a user from the server.
     
-    3. __**/clean [@offender] [count] [reason]**__
+    4. __**/clean [@offender] [count] [reason]**__
         - Cleans `count` messages from a channel from a user.
         - Count is an integer.
     """
