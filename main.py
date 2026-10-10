@@ -47,6 +47,28 @@ async def on_ready():
 async def ping(i: discord.Interaction):
     await i.response.send_message("bob")
 
+@bot.tree.command(name="help")
+async def help(i: discord.Interaction):
+    desc = """
+    1. __**/timeout [@offender] [duration] [reason]**__
+        - Duration must be in the format `Xd Xh Xm` where X is the duration of the unit of time.
+        - For example, `1d 10h 15m` as the duration will set the user's timeout to be *one day, ten hours and fifteen minutes*.
+        - Discord's API has a 28 day maximum time for a timeout, so exceeding that will probably fallback to 28 days. Failing to mention a proper duration will not time the user out.
+
+    2. __**/untimeout [@offender] [reason]**__
+        - Removes timeout from a user.
+
+    3. __**/kick [@offender] [reason]**__
+        - Kicks a user from the server.
+    
+    """
+    help_embed = discord.Embed(
+        title="Help",
+        description=desc
+    )
+
+    await i.response.send_message(embeds=[help_embed])
+    
 @bot.tree.command(name="timeout", description="Times out a member for a duration")
 @has_permissions(moderate_members=True)
 async def timeout(i: discord.Interaction, offender: discord.Member, duration: str, reason: str):
