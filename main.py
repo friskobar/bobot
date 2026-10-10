@@ -7,7 +7,6 @@ class Client(discord.Client):
         if channel is not None:
             await channel.send("BOBOT IS UP PREPARE THOU ASSES")
 
-intents = discord.Intents.default()
-
+intents = discord.Intents.all()
 client = Client(intents=intents)
 client.run(os.environ['TOKEN'])
