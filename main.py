@@ -37,6 +37,7 @@ async def validate_server(i: discord.Interaction) -> bool:
 @bot.event
 async def on_ready():
     print("bobot is on")
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="misterbob on YouTube"))
     try:
         synced = await bot.tree.sync()
         print(f"synced {len(synced)} commands")
