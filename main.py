@@ -11,7 +11,7 @@ bot.remove_command('help')
 
 ############################ SEPARATE BELOW INTO A NEW FILE LATER ############################
 
-async def log_action(actor: discord.Member, reason: str, action: config.Action, target: discord.Member):
+async def log_action(actor: discord.Member, reason: str, action: config.Action, target: discord.Member) -> None:
     em = discord.Embed(title=action.name,
                        color=discord.Color.from_rgb(10, 10, 12),
                        timestamp=dt.datetime.now()
@@ -25,7 +25,7 @@ async def log_action(actor: discord.Member, reason: str, action: config.Action, 
         await bot.get_channel(id).send(embeds=[em])
 
 # ensures that the server this command is ran on is one of ours; should prevent a wide variety of exploits involving custom permissions
-async def validate_server(i: discord.Interaction):
+async def validate_server(i: discord.Interaction) -> bool:
     if i.guild.id in config.servers:
         return True
     else:
