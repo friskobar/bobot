@@ -11,7 +11,7 @@ bot.remove_command('help')
 
 ############################ SEPARATE BELOW INTO A NEW FILE LATER ############################
 
-async def log_action(actor: discord.Member, reason: str, action: config.Action, target: discord.Member) -> None:
+async def log_action(actor: discord.Member, reason: str, action: config.Action, target: discord.Member, extra: dict = {}) -> None:
     em = discord.Embed(title=action.name,
                        color=discord.Color.from_rgb(10, 10, 12),
                        timestamp=dt.datetime.now()
@@ -20,9 +20,12 @@ async def log_action(actor: discord.Member, reason: str, action: config.Action, 
     em.set_footer(text=f"{actor.id} | {actor.global_name}")
     em.add_field(name="Offender", value=f"{target.global_name} ({target.id})")
     em.add_field(name="Reason", value=reason)
+    if extra != {}:
+        for key, value in extra.items():
+            em.add_field(name=key, value=value)
 
     for id in config.Channels.log:
-        await bot.get_channel(id).send(embeds=[em])
+        await bot.get_channel(id).send("Log", embeds=[em])
 
 # ensures that the server this command is ran on is one of ours; should prevent a wide variety of exploits involving custom permissions
 async def validate_server(i: discord.Interaction) -> bool:
@@ -62,6 +65,9 @@ async def help(i: discord.Interaction):
     3. __**/kick [@offender] [reason]**__
         - Kicks a user from the server.
     
+    3. __**/clean [@offender] [count] [reason]**__
+        - Cleans `count` messages from a channel from a user.
+        - Count is an integer.
     """
     help_embed = discord.Embed(
         title="Help",
@@ -94,7 +100,7 @@ async def timeout(i: discord.Interaction, offender: discord.Member, duration: st
         await i.channel.send(f"Failed to timeout {member.mention}. {str(e)}")
     else:
         await i.response.send_message(f"Timed {offender.mention} out for **{str(days)} days {str(hours)} hours and {str(minutes)} minutes**")
-        await log_action(i.user, reason, config.Action.TIMEOUT, offender)
+        await log_action(i.user, reason, config.Action.TIMEOUT, offender, {"Duration": duration})
 
 
 @bot.tree.command(name="untimeout", description="Removes timeout from a member")
@@ -128,7 +134,24 @@ async def kick(i: discord.Interaction, offender: discord.Member, reason: str):
     else:
         await i.response.send_message(f"Successfully kicked {offender.mention}.")
         await log_action(i.user, reason, config.Action.KICK, offender)
-        
+
+@bot.tree.command(name="clean", description="Cleans the specific channel of messages from a certain member")
+@has_permissions(manage_messages=True)
+async def clean(i: discord.Interaction, offender: discord.Member, count: int, reason: str):
+    valid = await validate_server(i)
+    if not valid:
+        return
+
+    await i.response.send_message("Cleaning...", ephemeral=True)
+    
+    checker = lambda m: m.author == offender
+    try:
+        await i.channel.purge(limit=count, check=checker, bulk=True)
+    except Exception as e:
+        await i.channel.send_message("Couldn't clean: {str(e)}")
+    else:
+        await i.channel.send("Cleaned.")
+        await log_action(i.user, reason, config.Action.CLEAN, offender, {"Count": count})
 
 @bot.event
 async def on_command_error(ctx: discord.CommandsContext, err: discord.Error):
@@ -136,6 +159,12 @@ async def on_command_error(ctx: discord.CommandsContext, err: discord.Error):
         return
     for id in config.Channels.log:
         await bot.get_channel(id).send(f"An error occured in {ctx.channel.name}:\n\n```{str(err)}```")
+
+@bot.event
+async def on_message_delete(message: discord.Message):
+    if message.channel.id in config.Channels.log:
+        for user in config.log_notif:
+            await bot.get_user(user).send(f"**__WARNING!__** This message was deleted from the <#{message.channel.id}> log channel! The log:\n\n{message.content}", embeds=message.embeds)
 
 
 bot.run(os.environ["TOKEN"])
