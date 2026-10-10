@@ -4,7 +4,7 @@ import datetime as dt
 import discord
 import config
 from discord.ext import commands
-from discord.ext.commands import has_permissions
+from discord import app_commands
 
 bot = commands.Bot(command_prefix='.', intents=discord.Intents.all())
 bot.remove_command('help')
@@ -77,7 +77,7 @@ async def help(i: discord.Interaction):
     await i.response.send_message(embeds=[help_embed])
     
 @bot.tree.command(name="timeout", description="Times out a member for a duration")
-@has_permissions(moderate_members=True)
+@app_commands.checks.has_permissions(moderate_members=True)
 async def timeout(i: discord.Interaction, offender: discord.Member, duration: str, reason: str):
     valid = await validate_server(i)
     if not valid:
@@ -97,14 +97,14 @@ async def timeout(i: discord.Interaction, offender: discord.Member, duration: st
     try:
         await offender.timeout(dt.timedelta(days=days, hours=hours, minutes=minutes))
     except Exception as e:
-        await i.channel.send(f"Failed to timeout {member.mention}. {str(e)}")
+        await i.channel.send(f"Failed to timeout {offender.mention}. {str(e)}")
     else:
         await i.response.send_message(f"Timed {offender.mention} out for **{str(days)} days {str(hours)} hours and {str(minutes)} minutes**")
         await log_action(i.user, reason, config.Action.TIMEOUT, offender, {"Duration": duration})
 
 
 @bot.tree.command(name="untimeout", description="Removes timeout from a member")
-@has_permissions(moderate_members=True)
+@app_commands.checks.has_permissions(moderate_members=True)
 async def untimeout(i: discord.Interaction, offender: discord.Member, reason: str):
     valid = await validate_server(i)
     if not valid:
@@ -121,7 +121,7 @@ async def untimeout(i: discord.Interaction, offender: discord.Member, reason: st
 
 
 @bot.tree.command(name="kick", description="Kicks a member")
-@has_permissions(kick_members=True)
+@app_commands.checks.has_permissions(moderate_members=True)
 async def kick(i: discord.Interaction, offender: discord.Member, reason: str):
     valid = await validate_server(i)
     if not valid:
@@ -130,13 +130,13 @@ async def kick(i: discord.Interaction, offender: discord.Member, reason: str):
     try:
         await offender.kick(reason=reason)
     except Exception as e:
-        await i.channel.send("Failed to kick {offender.mention}. {str(e)}")
+        await i.channel.send(f"Failed to kick {offender.mention}. {str(e)}")
     else:
         await i.response.send_message(f"Successfully kicked {offender.mention}.")
         await log_action(i.user, reason, config.Action.KICK, offender)
 
 @bot.tree.command(name="clean", description="Cleans the specific channel of messages from a certain member")
-@has_permissions(manage_messages=True)
+@app_commands.checks.has_permissions(manage_messages=True)
 async def clean(i: discord.Interaction, offender: discord.Member, count: int, reason: str):
     valid = await validate_server(i)
     if not valid:
@@ -148,7 +148,7 @@ async def clean(i: discord.Interaction, offender: discord.Member, count: int, re
     try:
         await i.channel.purge(limit=count, check=checker, bulk=True)
     except Exception as e:
-        await i.channel.send_message("Couldn't clean: {str(e)}")
+        await i.channel.send_message(f"Couldn't clean: {str(e)}")
     else:
         await i.channel.send("Cleaned.")
         await log_action(i.user, reason, config.Action.CLEAN, offender, {"Count": count})
