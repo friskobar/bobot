@@ -10,7 +10,7 @@ async def validate_server(i: discord.Interaction) -> bool:
     else:
         return False
     
-async def log_action(bot:discord.Bot, actor: discord.Member, reason: str, action: config.Action, target: discord.Member, extra: dict = {}) -> None:
+async def log_action(bot: discord.Bot, actor: discord.Member, reason: str, action: config.Action, target: discord.Member, extra: dict = {}) -> None:
     em = discord.Embed(title=action.name,
                        color=discord.Color.from_rgb(10, 10, 12),
                        timestamp=dt.datetime.now()

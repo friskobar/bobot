@@ -7,7 +7,7 @@ from cogs.notcogs.utils import validate_server, log_action
 from cogs.notcogs.config import Action
 
 class Moderation(commands.Cog):
-    def __init__(self, _bot:discord.Bot):
+    def __init__(self, _bot: discord.Bot):
         self.bot = _bot
     @commands.Cog.listener()
     async def on_ready(self):
@@ -82,5 +82,5 @@ class Moderation(commands.Cog):
             await i.response.send_message(f"Successfully kicked {offender.mention}.")
             await log_action(i.user, reason, Action.KICK, offender)
 
-async def setup(_bot):
+async def setup(_bot: discord.Bot):
     await _bot.add_cog(Moderation(_bot))

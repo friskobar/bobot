@@ -18,7 +18,7 @@ client = Bot(command_prefix=".", intents=discord.Intents.all())
 client.remove_command("help")
 
 #load all cogs
-async def load_cogs(c:discord.Bot): # c stands for Client
+async def load_cogs(c: discord.Bot): # c stands for Client
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
             await c.load_extension(f"cogs.{filename[:-3]}")

@@ -5,7 +5,7 @@ from cogs.notcogs.utils import validate_server, log_action
 from cogs.notcogs.config import Action
 
 class Misc(commands.Cog):
-    def __init__(self, _bot:discord.Bot):
+    def __init__(self, _bot: discord.Bot):
         self.bot = _bot
     @commands.Cog.listener()
     async def on_ready(self):
@@ -38,5 +38,5 @@ class Misc(commands.Cog):
 
         await i.response.send_message(embeds=[help_embed])
 
-async def setup(_bot):
+async def setup(_bot: discord.Bot):
     await _bot.add_cog(Misc(_bot))
