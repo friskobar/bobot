@@ -15,3 +15,5 @@ class Action(Enum):
     TIMEOUT = auto()
     UNTIMEOUT = auto()
     CLEAN = auto()
+    WARN = auto()
+    UNWARN = auto()
