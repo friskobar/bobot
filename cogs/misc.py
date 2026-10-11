@@ -43,7 +43,7 @@ class Misc(commands.Cog):
 
 
         7. __**/warnings [@member]**__
-            - View warnings of a membeR.
+            - View warnings of a member.
 
         """
         help_embed = discord.Embed(
