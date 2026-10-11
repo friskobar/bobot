@@ -30,6 +30,17 @@ class Misc(commands.Cog):
         4. __**/clean [@offender] [count] [reason]**__
             - Cleans `count` messages from a channel from a user.
             - Count is an integer.
+
+        5. __**/warn [@offender] [reason]**__
+            - Warns a user.
+
+        6. __**/unwarn [@offender] [warn_id] [reason]**__
+            - Removes a warning from a user.
+            - Warn ID can be found from /warnings
+
+        7. __**/warnings [@member]**__
+            - View warnings of a membeR.
+
         """
         help_embed = discord.Embed(
             title="Help",
