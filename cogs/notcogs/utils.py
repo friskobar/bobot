@@ -17,7 +17,8 @@ async def log_action(bot: discord.Bot, actor: discord.Member, reason: str, actio
                        )
 
     em.set_footer(text=f"{actor.id} | {actor.global_name}")
-    em.add_field(name="Offender", value=f"{target.global_name} ({target.id})")
+    if action != Action.CLOSE_TICKET:
+        em.add_field(name="Offender", value=f"{target.global_name} ({target.id})")
     em.add_field(name="Reason", value=reason)
     if extra != {}:
         for key, value in extra.items():

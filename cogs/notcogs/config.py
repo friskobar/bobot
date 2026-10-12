@@ -6,6 +6,8 @@ poly = 1191924513466757191
 bob = 821021638983680020
 log_notif = [frisk]
 
+ticket_perms = 1558314748192366693
+
 class Channels:
     log = [1558318108396224592] # append to this list, every channel in the list will get a log
 
@@ -17,3 +19,4 @@ class Action(Enum):
     CLEAN = auto()
     WARN = auto()
     UNWARN = auto()
+    CLOSE_TICKET = auto()
