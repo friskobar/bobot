@@ -19,4 +19,5 @@ class Action(Enum):
     CLEAN = auto()
     WARN = auto()
     UNWARN = auto()
+    OPEN_TICKET = auto()
     CLOSE_TICKET = auto()
