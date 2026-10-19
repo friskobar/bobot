@@ -36,15 +36,18 @@ class Misc(commands.Cog):
         5. __**/warn [@offender] [reason]**__
             - Warns a user.
 
-
         6. __**/unwarn [@offender] [warn_id] [reason]**__
             - Removes a warning from a user.
             - Warn ID can be found from /warnings
 
-
         7. __**/warnings [@member]**__
             - View warnings of a member.
+            
+        8. __**/openticket [reason]**__
+            - Opens a ticket to talk with a moderator.
 
+        9. __**/closeticket [reason]**__
+            - Closes a ticket.
         """
         help_embed = discord.Embed(
             title="Help",
