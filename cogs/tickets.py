@@ -50,7 +50,7 @@ class Tickets(commands.Cog):
             s = json.dumps(t_channels, indent=4)
             f.write(s)
         
-        await log_action(self.bot, i.user, reason, Action.OPEN_TICKET, "N/A", {"Ticket ID: " : ticket_uuid, "Channel ID: " : str(channel.id)})
+        await log_action(self.bot, i.user, reason, Action.OPEN_TICKET, "N/A", {"Ticket ID" : ticket_uuid, "Channel ID" : str(channel.id)})
 
     @app_commands.command(name="closeticket", description="Closes a ticket")
     async def closeticket(self, i: discord.Interaction, reason: str):
@@ -75,9 +75,9 @@ class Tickets(commands.Cog):
                     with open("tickets.json", "w") as f:
                         f.write(backup)
                 if owner:
-                    await log_action(self.bot, i.user, reason, Action.CLOSE_TICKET, "N/A", {"Ticket Name": i.channel.name, "Ticket Owner": owner.mention})
+                    await log_action(self.bot, i.user, reason, Action.CLOSE_TICKET, "N/A", {"Ticket ID": i.channel.name, "Ticket Owner": owner.mention})
                 else:
-                    await log_action(self.bot, i.user, reason, Action.CLOSE_TICKET, "N/A", {"Ticket Name": i.channel.name, "Ticket Owner": "Couldn't find logs for this channel in tickets.json."}) #place log_action after delete. generally, you do first and log later.
+                    await log_action(self.bot, i.user, reason, Action.CLOSE_TICKET, "N/A", {"Ticket ID": i.channel.name, "Ticket Owner": "Unavailable"}) #place log_action after delete. generally, you do first and log later.
             await i.channel.delete() # add a few checks or something, maybe make it so theres some sort of logs
 
 async def setup(_bot: discord.Bot):
