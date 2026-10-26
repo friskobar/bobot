@@ -6,6 +6,7 @@ import datetime as dt
 from discord import app_commands
 from discord.ext import commands
 from cogs.notcogs.utils import validate_server, log_action
+from cogs.notcogs import config
 from cogs.notcogs.config import Action
 
 class Moderation(commands.Cog):
@@ -15,6 +16,49 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print("Cogged moderation")
+    
+    @commands.Cog.listener()
+    async def on_message_delete(self, m: discord.Message):
+        if m.channel.id in config.Channels.log:
+            for user in config.log_notif:
+                await bot.get_user(user).send(f"**__WARNING!__** This message was deleted from the <#{message.channel.id}> log channel. The log:\n\n{message.content}", embeds=message.embeds)
+        else: #if not on the log channel, regularly log the delete
+            em = discord.Embed(title = "Message deleted.",
+                                color=discord.Color.from_rgb(10,10,12),
+                                timestamp=dt.datetime.now()
+                                )
+            em.add_field(name="Content", value=f"{m.content}")
+            em.add_field(name="Owner", value=f"{m.author.mention}")
+            for c in config.Channels.log:
+                channel = m.guild.get_channel(c)
+                print(channel)
+                if channel == None:
+                    print("isnone")
+                    continue # this is me checking if we have a logs channel setup on the server
+                #i did check if it was a TextChannel but i guess python doesnt have composition
+                await channel.send("Message Deleted", embeds=[em])
+        print("Message deleted!")
+    
+    @commands.Cog.listener()
+    async def on_message_edit(self, before:discord.Message, after:discord.Message):
+        if before.author.id == self.bot.application_id:
+            print("author is ME")
+            return
+        em = discord.Embed(title = "Message edit.",
+                            color=discord.Color.from_rgb(10,10,12),
+                            timestamp=dt.datetime.now()
+                            )
+        em.add_field(name="Before", value=f"{before.content}")
+        em.add_field(name="After", value=f"{after.content}")
+        em.add_field(name="Owner", value=f"{before.author.mention}")
+        for c in config.Channels.log:
+            channel = before.guild.get_channel(c)
+            if channel == None:
+                continue
+            await channel.send("Message Edited", embeds=[em])
+        print("postmessageedit")
+            
+
 
     @app_commands.command(name="clean", description="Cleans the channel from a certain member.")
     async def clean(self, i: discord.Interaction, offender: discord.Member, count: int, reason: str):

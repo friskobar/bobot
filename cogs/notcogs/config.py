@@ -9,7 +9,7 @@ log_notif = [poly, frisk, bob]
 ticket_perms = 1556828076975849584
 
 class Channels:
-    log = [1561788603653427280] # append to this list, every channel in the list will get a log [1558318108396224592] was test server log
+    log = [1561788603653427280, 1558318108396224592] # append to this list, every channel in the list will get a log [1558318108396224592] was test server log
 
 
 class Action(Enum):
@@ -21,3 +21,4 @@ class Action(Enum):
     UNWARN = auto()
     OPEN_TICKET = auto()
     CLOSE_TICKET = auto()
+    
