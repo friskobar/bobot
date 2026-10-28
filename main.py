@@ -2,6 +2,7 @@ import os
 import asyncio
 import re
 import discord
+import server
 from discord.ext import commands
 from discord import app_commands
 
@@ -32,5 +33,5 @@ async def sync(ctx):
         await ctx.send(f"synced {len(synced)} commands")
     except Exception as e:
         print(e)
-
+server.keep_alive()
 client.run(os.environ["TOKEN"])
