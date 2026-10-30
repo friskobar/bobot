@@ -9,7 +9,7 @@ def home():
 
 def run():
     print("run")
-    app.run(host="0.0.0.0", port=8081)
+    app.run(host="0.0.0.0", port=10000)
 
 def keep_alive():
     print("keep_alive")
