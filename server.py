@@ -4,11 +4,14 @@ from threading import Thread
 app = Flask('')
 @app.route('/')
 def home():
+    print("home")
     return "Discord bot ok"
 
 def run():
+    print("run")
     app.run(host="0.0.0.0", port=8081)
 
 def keep_alive():
+    print("keep_alive")
     t = Thread(target=run)
     t.start()
